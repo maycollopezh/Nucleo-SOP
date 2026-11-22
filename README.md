@@ -59,7 +59,7 @@ La validación con estudiantes reales no se sustituye por pruebas automáticas. 
 
 Se incluye configuración para Netlify con funciones de servidor. Ejecutar `node preparar-publicacion.mjs` genera `public/` a partir de una lista permitida. El archivo netlify.toml usa esa carpeta y las funciones de netlify/functions. No publicar la carpeta raíz ni .env.local como archivos estáticos.
 
-Configurar en el servicio de hosting las variables OPENAI_API_KEY, OPENAI_MODEL, SUPABASE_URL, SUPABASE_ANON_KEY y SESSION_SECRET. SESSION_SECRET debe tener al menos 32 caracteres aleatorios y mantenerse estable para conservar las sesiones. En producción HTTPS, el tutor exige iniciar sesión. El tutor tiene límites básicos por minuto en el proceso del servidor. Para una publicación de alto tráfico se requiere un límite de cuota centralizado y presupuesto de uso.
+Configurar en el servicio de hosting las variables OPENAI_API_KEY, OPENAI_MODEL, SUPABASE_URL, SUPABASE_ANON_KEY y SESSION_SECRET. SESSION_SECRET debe tener al menos 32 caracteres aleatorios y mantenerse estable para conservar las sesiones. Temporalmente, Bit está disponible para todos sin iniciar sesión, incluso en producción. Para volver a exigir cuenta, configurar BIT_REQUIRE_LOGIN=true en Netlify y volver a desplegar. Las cuentas y sus datos siguen requiriendo sesión. El tutor tiene límites básicos por minuto en el proceso del servidor. Para una publicación de alto tráfico se requiere un límite de cuota centralizado y presupuesto de uso.
 
 La clave suministrada tiene la vigencia configurada en OpenAI Platform. Si expira o se revoca, debe reemplazarse en el entorno del servidor. No se incluye en paquetes de distribución.
 
