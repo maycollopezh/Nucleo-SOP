@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Simulador de Sistemas Operativos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="brand"><span class="chip" aria-hidden="true">SO</span>
+            <div>
+                <h1>Simulador de Sistemas Operativos</h1>
+                <p>Planificación de procesos y gestión de memoria</p>
+            </div>
+        </div><span class="version">Prototipo · Hito 2</span>
+    </header>
+    <main>
+        <div class="nav-row">
+            <nav aria-label="Módulos"><button class="tab active" data-view="cpu" aria-pressed="true">CPU y
+                    memoria</button><button class="tab" data-view="pages"
+                    aria-pressed="false">Paginación</button><button class="tab" data-view="files"
+                    aria-pressed="false">Archivos</button></nav><span class="local-note">Ejercicios en tu
+                navegador</span>
+        </div>
+        <section id="cpu" class="view">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">SIMULACIÓN INTEGRADA</p>
+                    <h2>CPU y memoria principal</h2>
+                </div>
+                <div class="clock">Tiempo simulado <strong id="clock">0</strong><span>unidades</span></div>
+            </div>
+            <section class="panel config">
+                <div class="panel-heading">
+                    <h3>Configuración del ejercicio</h3><button id="example" class="text-button">Cargar ejemplo</button>
+                </div>
+                <div class="config-grid">
+                    <label>Planificación de CPU<select id="algorithm">
+                            <option value="rr">Round Robin</option>
+                            <option value="fifo">FIFO / FCFS</option>
+                            <option value="sjf">SJF</option>
+                            <option value="priority">Prioridad</option>
+                        </select></label>
+                    <label>Quantum<input id="quantum" type="number" min="1" max="100" value="2"></label>
+                    <label>Asignación de memoria<select id="fit">
+                            <option value="first">First Fit</option>
+                            <option value="best">Best Fit</option>
+                            <option value="worst">Worst Fit</option>
+                        </select></label>
+                    <label>Capacidad (KB)<input id="capacity" type="number" min="1" max="100000" value="1000"></label>
+                    <label>Velocidad<select id="speed">
+                            <option value="1200">Lenta</option>
+                            <option value="650" selected>Normal</option>
+                            <option value="250">Rápida</option>
+                        </select></label>
+                </div>
+                <p id="rule" class="hint"></p>
+            </section>
+            <div class="workspace-grid">
+                <section class="panel">
+                    <div class="panel-heading">
+                        <h3>Procesos</h3><span id="process-count" class="muted"></span>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Llegada</th>
+                                    <th>Duración</th>
+                                    <th>Prioridad</th>
+                                    <th>KB</th>
+                                    <th>Estado</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="process-list"></tbody>
+                        </table>
+                    </div>
+                    <details id="add-details">
+                        <summary>Agregar proceso</summary>
+                        <form id="add-form" class="add-grid"><label>ID<input id="new-id" value="P3" maxlength="12"
+                                    required></label><label>Llegada<input id="new-arrival" type="number" min="0"
+                                    max="500" value="2" required></label><label>Duración<input id="new-burst"
+                                    type="number" min="1" max="100" value="5" required></label><label>Prioridad<input
+                                    id="new-priority" type="number" min="1" max="99" value="1"
+                                    required></label><label>Memoria (KB)<input id="new-memory" type="number" min="1"
+                                    max="100000" value="150" required></label><button type="submit">Añadir</button>
+                        </form>
+                    </details>
+                    <p class="hint">Configura los procesos antes de iniciar. Reiniciar conserva los datos del ejercicio.
+                    </p>
+                </section>
+                <section class="panel">
+                    <div class="panel-heading">
+                        <h3>Memoria principal</h3><span id="memory-total" class="muted"></span>
+                    </div>
+                    <div id="memory-map" class="memory-map" aria-label="Distribución de memoria"></div>
+                    <div id="memory-legend" class="legend"></div>
+                    <div class="stats">
+                        <div><span>Ocupada</span><strong id="used">0 KB</strong></div>
+                        <div><span>Libre</span><strong id="free">1000 KB</strong></div>
+                        <div><span>Mayor hueco</span><strong id="largest">1000 KB</strong></div>
+                    </div>
+                    <div class="queue"><span>Cola de listos</span>
+                        <div id="ready-queue"></div>
+                    </div>
+                </section>
+            </div>
+            <section class="panel timeline-panel">
+                <div class="panel-heading">
+                    <h3>Línea de tiempo</h3>
+                    <div class="controls"><button id="play">Iniciar</button><button id="step"
+                            class="secondary">Siguiente paso</button><button id="reset"
+                            class="secondary">Reiniciar</button></div>
+                </div>
+                <p id="status" class="status" role="status" aria-live="polite">El ejemplo está listo. Inicia la
+                    simulación o avanza paso a paso.</p>
+                <div id="timeline" class="timeline"></div>
+                <p class="hint">Cada bloque representa un intervalo de ejecución. «Libre» indica que la CPU estuvo
+                    ociosa.</p>
+            </section>
+            <div class="workspace-grid">
+                <section class="panel">
+                    <h3>Resultados por proceso</h3>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Finaliza</th>
+                                    <th>Retorno</th>
+                                    <th>Espera CPU</th>
+                                    <th>Espera memoria</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results"></tbody>
+                        </table>
+                    </div>
+                    <p id="averages" class="hint">Los resultados aparecen al terminar cada proceso.</p>
+                </section>
+                <section class="panel">
+                    <h3>Registro de eventos</h3>
+                    <ol id="events" class="events"></ol>
+                </section>
+            </div>
+        </section>
+        <section id="pages" class="view" hidden>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">REEMPLAZO DE PÁGINAS</p>
+                    <h2>Referencias y marcos</h2>
+                </div>
+            </div>
+            <section class="panel">
+                <div class="page-config"><label>Algoritmo<select id="page-algorithm">
+                            <option value="fifo">FIFO</option>
+                            <option value="lru">LRU</option>
+                        </select></label><label>Marcos<input id="frames" type="number" min="1" max="10"
+                            value="5"></label><label class="chain-label">Cadena de referencias<input id="references"
+                            value="7,0,1,2,0,3,0,4,2,3,0,3,2"></label></div>
+                <div class="controls"><button id="page-step">Siguiente referencia</button><button id="page-all"
+                        class="secondary">Resolver todo</button><button id="page-reset"
+                        class="secondary">Reiniciar</button></div>
+                <p id="page-status" role="status" class="status">Ingresa la cadena y avanza para observar cada cambio.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead id="page-head"></thead>
+                        <tbody id="page-body"></tbody>
+                    </table>
+                </div>
+                <div class="stats">
+                    <div><span>Fallos</span><strong id="faults">0</strong></div>
+                    <div><span>Aciertos</span><strong id="hits">0</strong></div>
+                    <div><span>Tasa de fallos</span><strong id="fault-rate">—</strong></div>
+                </div>
+            </section>
+        </section>
+        <section id="files" class="view" hidden>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">ARCHIVOS SIMULADOS</p>
+                    <h2>Un espacio para tus apuntes</h2>
+                </div>
+            </div>
+            <div class="workspace-grid">
+                <section class="panel">
+                    <h3>Crear archivo de texto</h3>
+                    <form id="file-form"><label>Nombre<input id="file-name" placeholder="ejercicio-1.txt" maxlength="60"
+                                required></label><label>Contenido<textarea id="file-content" rows="8" maxlength="10000"
+                                required placeholder="Escribe tus apuntes del ejercicio..."></textarea></label><button
+                            type="submit">Guardar archivo</button></form>
+                    <p id="file-status" class="hint" role="status">Se guardan solo en este navegador. No se modifican
+                        los archivos de tu computadora.</p>
+                </section>
+                <section class="panel">
+                    <h3>Mis archivos</h3>
+                    <div id="file-list"></div>
+                    <article id="file-preview" hidden>
+                        <h4 id="preview-title"></h4>
+                        <pre id="preview-content"></pre>
+                    </article>
+                </section>
+            </div>
+        </section>
+        <footer>Sistemas Operativos · Perfil del reto <span>CPU · Memoria · Paginación</span></footer>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153d34">
+  <meta name="description" content="Aprende cómo funciona tu computadora con lecciones cortas y un laboratorio interactivo de sistemas operativos.">
+  <title>Núcleo · Aprende por dentro</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="engine.js" defer></script><script src="lessons.js" defer></script><script src="extended-lessons.js" defer></script><script src="app.js" defer></script><script src="systems-engine.js" defer></script><script src="modules.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <aside class="sidebar">
+    <a class="brand" href="#aprender" aria-label="Núcleo, inicio"><span class="brand-mark">n<span>·</span></span><span>núcleo<small>APRENDE POR DENTRO</small></span></a>
+    <p class="nav-label">TU ESPACIO</p>
+    <nav aria-label="Navegación principal">
+      <a href="#aprender" data-nav="aprender"><span class="nav-icon">◈</span> Mi ruta <span class="nav-dot"></span></a>
+      <a href="#explorar" data-nav="explorar"><span class="nav-icon">▧</span> Explorar</a>
+      <a href="#laboratorio" data-nav="laboratorio"><span class="nav-icon">⌘</span> Laboratorio</a>
+      <a href="#glosario" data-nav="glosario"><span class="nav-icon">▤</span> Diccionario</a>
+    <a href="#memoria" data-nav="memoria"><span class="nav-icon">▥</span> CPU y RAM</a>
+<a href="#paginacion" data-nav="paginacion"><span class="nav-icon">▦</span> Paginación</a>
+<a href="#archivos" data-nav="archivos"><span class="nav-icon">▤</span> Mis apuntes</a>
+<a href="#cuenta" data-nav="cuenta"><span class="nav-icon">◉</span> Mi cuenta</a></nav>
+    <div class="sidebar-bottom"><div class="mini-chip" aria-hidden="true">⌁</div><strong>Lo complejo, paso a paso.</strong><p>Una idea. Un experimento.<br>Un nuevo descubrimiento.</p><span class="version-tag">SISTEMAS OPERATIVOS</span></div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><div class="breadcrumb"><span>Tu próxima gran idea empieza aquí</span><strong id="page-name">Mi ruta de aprendizaje</strong></div><div class="top-stats"><span class="xp-pill" title="Puntos por lecciones y retos completados"><span aria-hidden="true">✦</span> <b id="xp">0</b> XP</span><button id="progress-button" class="avatar" aria-label="Ver mi progreso">YO</button></div></header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="app-footer"><span>Núcleo · Un laboratorio para aprender · <a href="/guia.html">Guía de uso</a></span><span>CPU, memoria y paginación</span></footer>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Activa JavaScript para usar las lecciones y simulaciones de Núcleo.</p></noscript>
+</body></html>
